@@ -62,15 +62,7 @@ public class DisplayParentUpdatesMojo
         String currentVersion = getProject().getParent().getVersion();
         String version = currentVersion;
 
-        VersionRange versionRange;
-        try
-        {
-            versionRange = VersionRange.createFromVersionSpec( version );
-        }
-        catch ( InvalidVersionSpecificationException e )
-        {
-            throw new MojoExecutionException( "Invalid version range specification: " + version, e );
-        }
+        VersionRange versionRange = getVersionRange(version);
 
         Artifact artifact = artifactFactory.createDependencyArtifact( getProject().getParent().getGroupId(),
                                                                       getProject().getParent().getArtifactId(),
@@ -123,6 +115,17 @@ public class DisplayParentUpdatesMojo
             buf.append( " -> " );
             buf.append( artifactVersion.toString() );
             logLine( false, buf.toString() );
+        }
+    }
+
+    private VersionRange getVersionRange(String version) throws MojoExecutionException {
+        try
+        {
+            return VersionRange.createFromVersionSpec(version);
+        }
+        catch ( InvalidVersionSpecificationException e )
+        {
+            throw new MojoExecutionException( "Invalid version range specification: " + version, e );
         }
     }
 
